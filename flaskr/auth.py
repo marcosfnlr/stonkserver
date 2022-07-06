@@ -12,7 +12,6 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     email = request.json.get('email', '')
     password = request.json.get('password', '')
-    print(email, password)
     if valid_login(email, password):
         user = User(email if '@' in email else email+'@email.com.br')
         return user.to_json()
