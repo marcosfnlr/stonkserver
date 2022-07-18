@@ -15,7 +15,9 @@
 
 (defn- validate-login [email pass]
   (if-let [userPass (get-user-pass email)]
-    (let [passHash (.toString (.hashString (Hashing/sha256) pass StandardCharsets/UTF_8))]
+    (let [passHash (-> (Hashing/sha256)
+                       (.hashString pass StandardCharsets/UTF_8)
+                       (.toString))]
       (= passHash userPass))
     false))
 
@@ -38,10 +40,9 @@
   (POST "/login" [] login)
   (route/not-found "Error, page not found!"))
 
-
 (defn -main
   "This is our main entry point"
   [& args]
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
     (server/run-server (wrap-json-params app-routes api-defaults) {:port port})
-    (println (str "Running on http:/127.0.0.1:" port))))
+    (println (str "Running on http://127.0.0.1:" port))))
